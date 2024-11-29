@@ -10,6 +10,7 @@ const REDIS_URL = 'redis://red-ct4aum68ii6s73dcuth0:Md2Ps5F0S7muZYt3T35HzasPiDEW
 function createRedisClient() {
   const client = redis.createClient({
     url: REDIS_URL,
+    pingInterval: 3000,
     socket: {
       tls: true,
       rejectUnauthorized: false,
