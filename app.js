@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const redis = require('redis');
+const stripe = require('stripe')('sk_test_51QSLleKaTpCG7pQ6OGLnrjsmngOC1avMmw0v1psZj1VmC8qrSxrr1xb3lxchQGrmxhNC0mEOg9vhzN9PM1ZBVsDo003zL7DJ2Y');
 const app = express();
 var cors = require('cors');
 app.use(cors());
@@ -161,6 +162,31 @@ app.post('/update-product', async (req, res) => {
     res.status(500).send('Error updating product');
   }
 });
+
+app.post('/create-payment-intent', async (req, res) => {
+  console.log("asse ekbaro?");
+  const { amount, currency } = req.body;
+
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount,
+      currency: currency,
+      payment_method_types: ['card'],
+    });
+   console.log(paymentIntent)
+    res.status(200).send({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    console.log(error)
+    res.status(400).send({
+      error: {
+        message: error.message,
+      },
+    });
+  }
+});
+
 
 
 const PORT = 3729;
